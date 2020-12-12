@@ -1,1 +1,75 @@
 # INF221-Projeto-Pratico
+
+# Para fazer:
+
+- Criar o banco de dados
+- Popular o banco de dados com os seguintes dados:
+  - Uma empresa
+  - Um cliente
+  - Um código
+- Implementar os seguintes métodos da controladora:
+  - Get Código Pontos
+  - Add Código Pontos
+  - Get Usuário Logado
+  - Criar um mock para fazer login (só colocar o primeiro da tabela como logado)
+- Criar a tela da empresa, com os seguintes componentes:
+  - Menu no topo da página
+  - Nome da empresa
+  - Número de pontos do cliente na empresa
+  - A avaliação média da empresa
+  - Input para receber o código
+  - Demais botões, mas sem funcionar
+- Criar métodos de recuperar código de pontos:
+  - Acessar a Controladora para buscar o usuário
+  - Acessar a controladora para buscar o código de pontos
+  - Validar o código, se existir
+  - Adicionar os pontos para o usuário
+  - Exibir mensagens como Toast, sejam de sucesso ou de erro
+- Criar tela de gerar código de pontos:
+  - Um input para receber o número de pontos
+  - Um input para receber o valor da compra
+  - Botão gerar, que após ser clicado abre a tela com o código
+- Criar tela com o código gerado:
+  - Número do código
+  - QR Code do código (deixar fixo, se der tempo fazer funcional)
+  - Botão de imprimir, sem funcionar
+  - Dados do código (valor e pontos)
+
+# Banco de Dados:
+
+- Tabela Cliente
+  - ID (Primary)
+  - Nome
+  - Email (Unique)
+  - CPF (Unique)
+  - Senha
+  - Telefone
+  - Endereço
+  - Foto
+  - Data de Nascimento
+- Tabela Empresa
+  - ID (Primary)
+  - Nome
+  - Email (Unique)
+  - CPF
+  - CNPJ (Unique)
+  - Senha
+  - Telefone
+  - Endereço
+  - Redes Sociais
+  - Foto
+  - PontosCompra
+  - PontosValor
+  - PrecoPonto
+  - Inadimplente
+- Tabela Pontos Cliente
+  - ID Cliente (Primary/Foreign)
+  - ID Empresa (Primary/Foreign)
+  - TotalPontos
+- Tabela Código de Pontos
+  - Código (Primary)
+  - NumeroDePontos
+  - Validado
+  - ValorDaCompra
+  - DataGeracao
+  - ID Empresa (Foreign)
