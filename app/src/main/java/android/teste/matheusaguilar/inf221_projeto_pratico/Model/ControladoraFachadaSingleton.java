@@ -205,7 +205,7 @@ public final class ControladoraFachadaSingleton {
     }
 
     public CodigoPontos getCodigoPontos(String codigo){
-        Cursor c = bd.buscar("codigodepontos", new String[]{"numeroDePontos", "valorDaCompra", "idEmpresa", "validado"}, "codigo=" + codigo, "");
+        Cursor c = bd.buscar("codigopontos", new String[]{"numeroDePontos", "valorDaCompra", "idEmpresa", "validado"}, "codigo='" + codigo + "'", "");
 
         if(c != null && c.getCount() > 0){
 
@@ -228,7 +228,7 @@ public final class ControladoraFachadaSingleton {
         }
     }
 
-    public void criarCodigoPontos(Integer pontos, Integer valor){
+    public String criarCodigoPontos(Integer pontos, Double valor){
         String codigo = randomString(TAMANHO_CODIGO);
         CodigoPontos cd = getCodigoPontos(codigo);
 
@@ -248,6 +248,8 @@ public final class ControladoraFachadaSingleton {
         valores.put("idEmpresa", usuarioEmpresa.getId());
 
         bd.inserir("codigopontos", valores);
+
+        return codigo;
     }
 
     public CodigoPontos validarCodigoPontos(String codigo){

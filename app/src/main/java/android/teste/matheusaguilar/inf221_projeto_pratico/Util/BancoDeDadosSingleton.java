@@ -45,7 +45,7 @@ public final class BancoDeDadosSingleton {
                     "codigo TEXT PRIMARY KEY, " +
                     "numeroDePontos INTEGER, " +
                     "validado INTEGER DEFAULT 0, " +
-                    "valorDaCompra INTEGER, " +
+                    "valorDaCompra REAL, " +
                     "dataGeracao TEXT, " +
                     "idEmpresa INTEGER, " +
                     "CONSTRAINT fk_codigopontos_empresa FOREIGN KEY (idEmpresa) REFERENCES empresa(idEmpresa) " +

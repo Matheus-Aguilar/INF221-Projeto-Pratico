@@ -4,10 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.teste.matheusaguilar.inf221_projeto_pratico.Model.ControladoraFachadaSingleton;
 import android.teste.matheusaguilar.inf221_projeto_pratico.Model.Empresa;
-import android.teste.matheusaguilar.inf221_projeto_pratico.Model.CodigoPontos;
 import android.teste.matheusaguilar.inf221_projeto_pratico.Model.PontosCliente;
-import android.teste.matheusaguilar.inf221_projeto_pratico.Model.Cliente;
-import android.teste.matheusaguilar.inf221_projeto_pratico.Model.ControladoraFachadaSingleton;
 
 import android.teste.matheusaguilar.inf221_projeto_pratico.R;
 
@@ -17,9 +14,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-public class CadastrarPontosActivity extends AppCompatActivity implements onStart {
+public class CadastrarPontosActivity extends AppCompatActivity {
 
     private Empresa empresa;
     private PontosCliente pontos;
