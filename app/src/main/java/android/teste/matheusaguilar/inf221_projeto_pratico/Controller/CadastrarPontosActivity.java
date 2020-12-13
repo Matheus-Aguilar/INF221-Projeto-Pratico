@@ -2,8 +2,11 @@ package android.teste.matheusaguilar.inf221_projeto_pratico.Controller;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.teste.matheusaguilar.inf221_projeto_pratico.Model.AlreadyValidatedCodeException;
+import android.teste.matheusaguilar.inf221_projeto_pratico.Model.CodigoPontos;
 import android.teste.matheusaguilar.inf221_projeto_pratico.Model.ControladoraFachadaSingleton;
 import android.teste.matheusaguilar.inf221_projeto_pratico.Model.Empresa;
+import android.teste.matheusaguilar.inf221_projeto_pratico.Model.InvalidCodeException;
 import android.teste.matheusaguilar.inf221_projeto_pratico.Model.PontosCliente;
 
 import android.teste.matheusaguilar.inf221_projeto_pratico.R;
@@ -11,8 +14,12 @@ import android.teste.matheusaguilar.inf221_projeto_pratico.R;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 public class CadastrarPontosActivity extends AppCompatActivity {
 
@@ -48,6 +55,29 @@ public class CadastrarPontosActivity extends AppCompatActivity {
     }
 
     public void resgatarCodigo(View v){
+        EditText codigoText = (EditText) findViewById(R.id.codigoPromocional);
+        String codigo = codigoText.getText().toString();
 
+        Log.e("ERRO", codigo);
+
+        try{
+            CodigoPontos cp = controladora.validarCodigoPontos(codigo, controladora.getClienteLogado());
+
+            pontos = controladora.getPontosCliente(controladora.getClienteLogado(), empresa);
+
+            TextView pontosCliente = (TextView) findViewById(R.id.pontosCliente);
+            pontosCliente.setText(Integer.toString(pontos.getTotal()));
+
+            Toast.makeText(this, "Parabéns! Você ganhou " + cp.getPontos() + " pontos!", Toast.LENGTH_LONG).show();
+        }
+        catch(InvalidCodeException e){
+            Toast.makeText(this, "Esse código não é válido", Toast.LENGTH_LONG).show();
+        }
+        catch(AlreadyValidatedCodeException e){
+            Toast.makeText(this, "Esse código já foi validado", Toast.LENGTH_LONG).show();
+        }
+        catch(Exception e){
+            Log.e("ERRO", e.getMessage());
+        }
     }
 }

@@ -17,14 +17,19 @@ public class CodigoPontos {
         validado = _validado;
     }
 
+    public int getPontos(){
+        return numeroDePontos;
+    }
+
+    public Empresa getEmpresa(){
+        return empresa;
+    }
+
     public boolean foiValidado(){
         return validado;
     }
 
-    public boolean validar(){
-        if(validado || codigo == null)
-            return false;
+    public void validar(){
         validado = true;
-        return true;
     }
 }

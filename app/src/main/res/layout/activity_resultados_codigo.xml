@@ -79,7 +79,8 @@
                 android:text="1234567890"
                 android:textStyle="bold"
                 android:textSize="20dp"
-                android:id="@+id/codigoText"/>
+                android:id="@+id/codigoText"
+                android:textIsSelectable="true"/>
 
         </LinearLayout>
 

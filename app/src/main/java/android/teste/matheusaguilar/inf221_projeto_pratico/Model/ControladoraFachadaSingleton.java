@@ -154,7 +154,7 @@ public final class ControladoraFachadaSingleton {
 
         int pontosAtuais = 0;
 
-        if(cursor == null || cursor.getCount() > 0){
+        if(cursor == null || cursor.getCount() <= 0){
             criarPontosCliente(c, e);
             pontosAtuais = 0;
         }
@@ -162,6 +162,7 @@ public final class ControladoraFachadaSingleton {
             cursor.moveToNext();
             pontosAtuais = cursor.getInt(0);
         }
+
 
         ContentValues valores = new ContentValues();
         valores.put("totalPontos", pontosAtuais + valor);
@@ -252,18 +253,25 @@ public final class ControladoraFachadaSingleton {
         return codigo;
     }
 
-    public CodigoPontos validarCodigoPontos(String codigo){
+    public CodigoPontos validarCodigoPontos(String codigo, Cliente cliente) throws InvalidCodeException, AlreadyValidatedCodeException {
         CodigoPontos cd = getCodigoPontos(codigo);
 
-        if(cd == null || cd.foiValidado())
-            return null;
-        else {
-            cd.validar();
+        if(cd == null){
+            throw new InvalidCodeException("O código não existe no BD");
+        }
+        else if(cd.foiValidado()){
+            throw new AlreadyValidatedCodeException("O código já foi validado");
+        }
+        else{
 
             ContentValues valores = new ContentValues();
             valores.put("validado", 1);
 
-            bd.atualizar("codigopontos", valores, "codigo=" + codigo);
+
+            bd.atualizar("codigopontos", valores, "codigo='" + codigo + "'");
+            cd.validar();
+
+            adicionarPontos(cliente, cd.getEmpresa(), cd.getPontos());
 
             return cd;
         }
