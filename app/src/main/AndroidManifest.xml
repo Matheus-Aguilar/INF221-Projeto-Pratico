@@ -3,6 +3,7 @@
     package="android.teste.matheusaguilar.inf221_projeto_pratico">
 
     <application
+        android:name="android.teste.matheusaguilar.inf221_projeto_pratico.Util.MyApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"

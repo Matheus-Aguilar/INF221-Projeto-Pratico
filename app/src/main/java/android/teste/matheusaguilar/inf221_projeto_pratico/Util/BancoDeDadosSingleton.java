@@ -5,12 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.teste.matheusaguilar.inf221_projeto_pratico.R;
+import android.util.Log;
 
 public final class BancoDeDadosSingleton {
 
     protected SQLiteDatabase db;
-    private final String NOME_BANCO = "cartoes_fidelidade_bd";
-    private static BancoDeDadosSingleton INSTANCE = new BancoDeDadosSingleton();
+    private static final String NOME_BANCO = "cartoes_fidelidade_bd";
+    private static BancoDeDadosSingleton INSTANCE;
 
     private final String[] SCRIPT_DATABASE_CREATE = new String[]{
             "CREATE TABLE cliente(" +
@@ -57,7 +58,7 @@ public final class BancoDeDadosSingleton {
                     "CONSTRAINT fk_pontoscliente_cliente FOREIGN KEY (idCliente) REFERENCES cliente(id), " +
                     "CONSTRAINT fk_pontoscliente_empresa FOREIGN KEY (idEmpresa) REFERENCES empresa(id) " +
                     "); ",
-            "INSERT INTO cliente(idCliente, nome, email, CPF, senha, telefone, endereco, foto, dataNascimento) VALUES " +
+            "INSERT INTO cliente(idCliente, nome, email, CPF, senha, telefone, endereco, foto, dataDeNascimento) VALUES " +
                     "(1, 'Arnaldo', 'arnaldo@gmail.com', 12345678900, 'a123', 33988782323, 'Rua Euclides Dutra, 37'," + R.drawable.foto_pessoa + ", '12-12-1990');",
             "INSERT INTO empresa(idEmpresa, nome, email, CPF, CNPJ, senha, telefone, endereco, redesSociais, foto, pontosCompra, pontosValor, precoPonto, inadimplente) VALUES " +
                     "(1, 'Lojas Laranja', 'lojaslaranja@gmail.com', '98765432100', '13579246801234', '1abc', '33988613490', 'Rua Manoel Saraiva, 42', NULL, " + R.drawable.foto_empresa + ", 0, 1, 1, 0);",
@@ -65,6 +66,10 @@ public final class BancoDeDadosSingleton {
 
     private BancoDeDadosSingleton(){
         Context ctx = MyApp.getContext();
+
+        if(ctx == null){
+            Log.e("NULL", "NOME");
+        }
 
         db = ctx.openOrCreateDatabase(NOME_BANCO, Context.MODE_PRIVATE, null);
 
@@ -80,7 +85,10 @@ public final class BancoDeDadosSingleton {
     }
 
     public static BancoDeDadosSingleton getInstance(){
-        return BancoDeDadosSingleton.INSTANCE;
+        if(INSTANCE == null){
+            INSTANCE = new BancoDeDadosSingleton();
+        }
+        return INSTANCE;
     }
 
     public long inserir(String tabela, ContentValues valores){

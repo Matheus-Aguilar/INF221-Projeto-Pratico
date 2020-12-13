@@ -19,42 +19,73 @@ public final class ControladoraFachadaSingleton {
             "abcdefghijklmnopqrstuvwxyz" +
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    private static Cliente usuarioCliente;
-    private static Empresa usuarioEmpresa;
+    private Cliente usuarioCliente;
+    private Empresa usuarioEmpresa;
     private BancoDeDadosSingleton bd;
-    private static ControladoraFachadaSingleton INSTANCE = new ControladoraFachadaSingleton();
+    private static ControladoraFachadaSingleton INSTANCE;
 
     private ControladoraFachadaSingleton(){
         bd = BancoDeDadosSingleton.getInstance();
     }
 
     public static ControladoraFachadaSingleton getInstance(){
-        return ControladoraFachadaSingleton.INSTANCE;
+        if(INSTANCE == null){
+            INSTANCE = new ControladoraFachadaSingleton();
+        }
+        return INSTANCE;
     }
 
     /*Esse método é apenas um modelo (mock), que simula o login
     * de um cliente*/
     public void mockLoginCliente(){
         Cursor c = bd.buscar("cliente", new String[]{"idCliente", "nome", "foto"}, "", "idCliente");
+        c.moveToNext();
+
         usuarioCliente = new Cliente(c.getInt(0), c.getString(1), c.getInt(2));
         usuarioEmpresa = null;
+
         c.close();
     }
 
     /*Esse método é apenas um modelo (mock), que simula o login
      * de uma empresa*/
     public void mockLoginEmpresa(){
-        Cursor c = bd.buscar("empresa", new String[]{"idEmpresa", "nome", "foto"}, "", "idCliente");
+        Cursor c = bd.buscar("empresa", new String[]{"idEmpresa", "nome", "foto"}, "", "idEmpresa");
+        c.moveToNext();
+
         usuarioEmpresa = new Empresa(c.getInt(0), c.getString(1), c.getInt(2));
         usuarioCliente = null;
+
         c.close();
     }
 
+    /*Esse método é apenas um modelo (mock), que a abertura da pagina
+    * com os dados da emrpesa*/
+    public Empresa mockDadosEmpresa(){
+        Cursor c = bd.buscar("empresa", new String[]{"idEmpresa", "nome", "foto"}, "", "idEmpresa");
+        c.moveToNext();
+
+        Empresa empresa = new Empresa(c.getInt(0), c.getString(1), c.getInt(2));
+        c.close();
+
+        return empresa;
+    }
+
+    public Cliente getClienteLogado(){
+        return usuarioCliente;
+    }
+
+    public Empresa getEmpresaLogada(){
+        return usuarioEmpresa;
+    }
+
     public Cliente getCliente(Integer id){
-        String where = "WHERE idCliente = " + id;
+        String where = "idCliente = " + id;
         Cursor c = bd.buscar("cliente", new String[]{"idCliente", "nome", "foto"}, where, "");
 
         if(c != null && c.getCount() > 0) {
+
+            c.moveToNext();
 
             Cliente cliente = new Cliente(c.getInt(0), c.getString(1), c.getInt(2));
             c.close();
@@ -68,10 +99,12 @@ public final class ControladoraFachadaSingleton {
     }
 
     public Empresa getEmpresa(Integer id){
-        String where = "WHERE idEmpresa = " + id;
+        String where = "idEmpresa = " + id;
         Cursor c = bd.buscar("empresa", new String[]{"idEmpresa", "nome", "foto"}, where, "");
 
         if(c != null && c.getCount() > 0) {
+
+            c.moveToNext();
 
             Empresa empresa = new Empresa(c.getInt(0), c.getString(1), c.getInt(2));
             c.close();
@@ -85,21 +118,22 @@ public final class ControladoraFachadaSingleton {
     }
 
     public PontosCliente getPontosCliente(Cliente c, Empresa e){
-        String where = "WHERE idCliente = " + c.getId() + " AND idEmpresa = " + e.getId();
+        String where = "idCliente = " + c.getId() + " AND idEmpresa = " + e.getId();
         Cursor cursor = bd.buscar("pontoscliente", new String[]{"idCliente", "idEmpresa", "totalPontos"}, where, "");
 
-        Cliente cliente = getCliente(cursor.getInt(0));
-        Empresa empresa = getEmpresa(cursor.getInt(1));
-        int total = cursor.getInt(2);
-
         if(cursor != null && cursor.getCount() > 0) {
-            PontosCliente pc = new PontosCliente(cliente, empresa, total);
+
+            cursor.moveToNext();
+
+            int total = cursor.getInt(2);
+
+            PontosCliente pc = new PontosCliente(c, e, total);
             cursor.close();
             return pc;
         }
         else{
             cursor.close();
-            return null;
+            return new PontosCliente(c, e, 0);
         }
     }
 
@@ -114,16 +148,23 @@ public final class ControladoraFachadaSingleton {
 
 
     public void adicionarPontos(Cliente c, Empresa e, Integer valor){
-        String where = "WHERE idCliente = " + c.getId() + " AND idEmpresa = " + e.getId();
+        String where = "idCliente = " + c.getId() + " AND idEmpresa = " + e.getId();
 
         Cursor cursor = bd.buscar("pontoscliente", new String[]{"totalPontos"}, where, "");
 
+        int pontosAtuais = 0;
+
         if(cursor == null || cursor.getCount() > 0){
             criarPontosCliente(c, e);
+            pontosAtuais = 0;
+        }
+        else{
+            cursor.moveToNext();
+            pontosAtuais = cursor.getInt(0);
         }
 
         ContentValues valores = new ContentValues();
-        valores.put("totalPontos", cursor.getInt(0) + valor);
+        valores.put("totalPontos", pontosAtuais + valor);
 
         bd.atualizar("pontoscliente", valores, where);
 
@@ -131,9 +172,11 @@ public final class ControladoraFachadaSingleton {
     }
 
     public void removerPontos(Cliente c, Empresa e, Integer valor){
-        String where = "WHERE idCliente = " + c.getId() + " AND idEmpresa = " + e.getId();
+        String where = "idCliente = " + c.getId() + " AND idEmpresa = " + e.getId();
 
         Cursor cursor = bd.buscar("pontoscliente", new String[]{"totalPontos"}, where, "");
+
+        cursor.moveToNext();
 
         if(valor > cursor.getInt(0)){
             cursor.close();
@@ -162,9 +205,11 @@ public final class ControladoraFachadaSingleton {
     }
 
     public CodigoPontos getCodigoPontos(String codigo){
-        Cursor c = bd.buscar("codigodepontos", new String[]{"numeroDePontos", "valorDaCompra", "idEmpresa", "validado"}, "WHERE codigo=" + codigo, "");
+        Cursor c = bd.buscar("codigodepontos", new String[]{"numeroDePontos", "valorDaCompra", "idEmpresa", "validado"}, "codigo=" + codigo, "");
 
         if(c != null && c.getCount() > 0){
+
+            c.moveToNext();
 
             int pontos = c.getInt(0);
             int valor = c.getInt(1);
@@ -216,7 +261,7 @@ public final class ControladoraFachadaSingleton {
             ContentValues valores = new ContentValues();
             valores.put("validado", 1);
 
-            bd.atualizar("codigopontos", valores, "WHERE=" + codigo);
+            bd.atualizar("codigopontos", valores, "codigo=" + codigo);
 
             return cd;
         }

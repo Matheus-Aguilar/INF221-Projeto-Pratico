@@ -32,7 +32,6 @@
             app:civ_border_width="2dp"
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:src="@drawable/foto_pessoa"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:layout_marginTop="5dp"
@@ -56,8 +55,7 @@
             app:civ_border_width="2dp"
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/foto_empresa"/>
+            android:layout_centerHorizontal="true"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -113,7 +111,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp">
+            android:layout_marginTop="30dp"
+            android:gravity="center_vertical">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -123,7 +122,10 @@
                 android:textSize="20dp"
                 android:layout_marginRight="5dp"/>
 
-            <ImageView/>
+            <ImageView
+                android:src="@drawable/estrelas"
+                android:layout_height="20dp"
+                android:layout_width="90dp"/>
 
         </LinearLayout>
 
@@ -137,7 +139,7 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Digite o Código Promocional"
+            android:hint="Digite o Código Promocional"
             android:id="@+id/codigoPromocional"/>
         <Button
             android:layout_width="150dp"
