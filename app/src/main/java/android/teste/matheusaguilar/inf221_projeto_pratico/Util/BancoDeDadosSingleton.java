@@ -17,12 +17,12 @@ public final class BancoDeDadosSingleton {
                     "idCliente INTEGER PRIMARY KEY, " +
                     "nome TEXT, " +
                     "email TEXT UNIQUE, " +
-                    "CPF UNIQUE, " +
+                    "CPF INTEGER UNIQUE, " +
                     "senha TEXT, " +
                     "telefone INTEGER, " +
                     "endereco TEXT, " +
                     "foto INTEGER, " +
-                    "dataDeNascimento " +
+                    "dataDeNascimento TEXT" +
                     "); ",
             "CREATE TABLE empresa(" +
                     "idEmpresa INTEGER PRIMARY KEY, " +
@@ -40,14 +40,14 @@ public final class BancoDeDadosSingleton {
                     "precoPonto INTEGER, " +
                     "inadimplente INTEGER DEFAULT 0" +
                     "); ",
-            "CREATE TABLE codigodepontos(" +
+            "CREATE TABLE codigopontos(" +
                     "codigo TEXT PRIMARY KEY, " +
                     "numeroDePontos INTEGER, " +
                     "validado INTEGER DEFAULT 0, " +
                     "valorDaCompra INTEGER, " +
                     "dataGeracao TEXT, " +
                     "idEmpresa INTEGER, " +
-                    "CONSTRAINT fk_codigodepontos_empresa FOREIGN KEY (idEmpresa) REFERENCES empresa(idEmpresa) " +
+                    "CONSTRAINT fk_codigopontos_empresa FOREIGN KEY (idEmpresa) REFERENCES empresa(idEmpresa) " +
                     "); ",
             "CREATE TABLE pontoscliente(" +
                     "idCliente INTEGER, " +
@@ -58,7 +58,7 @@ public final class BancoDeDadosSingleton {
                     "CONSTRAINT fk_pontoscliente_empresa FOREIGN KEY (idEmpresa) REFERENCES empresa(id) " +
                     "); ",
             "INSERT INTO cliente(idCliente, nome, email, CPF, senha, telefone, endereco, foto, dataNascimento) VALUES " +
-                    "(1, 'Arnaldo', 'arnaldo@gmail.com', 12345678900, 'a123', 33988782323, 'Rua Euclides Dutra, 37', NULL, '12-12-1990');",
+                    "(1, 'Arnaldo', 'arnaldo@gmail.com', 12345678900, 'a123', 33988782323, 'Rua Euclides Dutra, 37'," + R.drawable.foto_pessoa + ", '12-12-1990');",
             "INSERT INTO empresa(idEmpresa, nome, email, CPF, CNPJ, senha, telefone, endereco, redesSociais, foto, pontosCompra, pontosValor, precoPonto, inadimplente) VALUES " +
                     "(1, 'Lojas Laranja', 'lojaslaranja@gmail.com', '98765432100', '13579246801234', '1abc', '33988613490', 'Rua Manoel Saraiva, 42', NULL, " + R.drawable.foto_empresa + ", 0, 1, 1, 0);",
     };
@@ -79,7 +79,7 @@ public final class BancoDeDadosSingleton {
         c.close();
     }
 
-    public BancoDeDadosSingleton getInstance(){
+    public static BancoDeDadosSingleton getInstance(){
         return BancoDeDadosSingleton.INSTANCE;
     }
 
